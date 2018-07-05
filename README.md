@@ -67,10 +67,10 @@ Installing a snap is very quick. Snaps are secure. They are isolated with all of
         docker build -t electroneum .
      
         # either run in foreground
-        docker run -it -v /electroneum/chain:/root/.electroneum -v /electroneum/wallet:/wallet -p 26967:26967 electroneum
+        docker run -it -v /electroneum/chain:/root/.electroneum -v /electroneum/wallet:/wallet -p 26977:26977 electroneum
 
         # or in background
-        docker run -it -d -v /electroneum/chain:/root/.electroneum -v /electroneum/wallet:/wallet -p 26967:26967 electroneum
+        docker run -it -d -v /electroneum/chain:/root/.electroneum -v /electroneum/wallet:/wallet -p 26977:26977 electroneum
 
 Packaging for your favorite distribution would be a welcome contribution!
 
