@@ -90,10 +90,10 @@ static const struct {
   time_t time;
 } mainnet_hard_forks[] = {
   // version 1 from the start of the blockchain
-  { 1, 1, 0, 1341378000 },
-  { 6, 307500, 0, 1538815057 }, //1538815057
+  { 1, 1, 0, 1341378000 }, 
+  { 6, 2, 0, 1530759847 },
 };
-static const uint64_t mainnet_hard_fork_version_1_till = 307499;
+static const uint64_t mainnet_hard_fork_version_1_till = 1;
 
 static const struct {
   uint8_t version;
@@ -102,10 +102,10 @@ static const struct {
   time_t time;
 } testnet_hard_forks[] = {
   // version 1 from the start of the blockchain
-  { 1, 1, 0, 1341378000 },
-  { 6, 190060, 0, 1523263057 + 86400*180 },
+  { 1, 1, 0, 1341378000 }, 
+  { 6, 2, 0, 1530759847 },
 };
-static const uint64_t testnet_hard_fork_version_1_till = 190059;
+static const uint64_t testnet_hard_fork_version_1_till = 1;
 
 //------------------------------------------------------------------
 Blockchain::Blockchain(tx_memory_pool& tx_pool) :
@@ -693,7 +693,7 @@ difficulty_type Blockchain::get_difficulty_for_next_block()
   std::vector<difficulty_type> difficulties;
   auto height = m_db->height();
 
-  uint64_t v6height = m_testnet ? 190060 : 307500;
+  uint64_t v6height = m_testnet ? 2 : 2;
   uint32_t difficultyBlocksCount = height >= v6height ? DIFFICULTY_BLOCKS_COUNT_V6 : DIFFICULTY_BLOCKS_COUNT;
   // ND: Speedup
   // 1. Keep a list of the last 735 (or less) blocks that is used to compute difficulty,
@@ -886,7 +886,7 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
   std::vector<difficulty_type> cumulative_difficulties;
 
   auto height = m_db->height();
-  uint64_t v6height = m_testnet ? 190060 : 307500;
+  uint64_t v6height = m_testnet ? 2 : 2;
   uint32_t difficultyBlocksCount = height >= v6height ? DIFFICULTY_BLOCKS_COUNT_V6 : DIFFICULTY_BLOCKS_COUNT;
 
   // if the alt chain isn't long enough to calculate the difficulty target
