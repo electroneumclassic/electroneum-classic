@@ -35,6 +35,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <vector>
+#include <boost/math/special_functions/round.hpp>
 
 #include "common/int-util.h"
 #include "crypto/hash.h"
@@ -123,7 +124,7 @@ namespace cryptonote {
 
   difficulty_type next_difficulty(std::vector<std::uint64_t> timestamps, std::vector<difficulty_type> cumulative_difficulties, size_t target_seconds, uint8_t version) {
 
-    size_t difficultyWindow = version >= 6 ? DIFFICULTY_WINDOW_V6 : DIFFICULTY_WINDOW;
+    size_t difficultyWindow = version >= 6 ? DIFFICULTY_WINDOW_V6_OLD : DIFFICULTY_WINDOW;
 
     if(timestamps.size() > difficultyWindow)
     {
@@ -138,12 +139,12 @@ namespace cryptonote {
       return 1;
     }
     static_assert(DIFFICULTY_WINDOW >= 2, "Window is too small");
-    static_assert(DIFFICULTY_WINDOW_V6 >= 2, "Window is too small");
+    static_assert(DIFFICULTY_WINDOW_V6_OLD >= 2, "Window is too small");
     assert(length <= difficultyWindow);
     sort(timestamps.begin(), timestamps.end());
     size_t cut_begin, cut_end;
     static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Cut length is too large");
-    static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW_V6 - 2, "Cut length is too large");
+    static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW_V6_OLD - 2, "Cut length is too large");
     if (length <= difficultyWindow - 2 * DIFFICULTY_CUT) {
       cut_begin = 0;
       cut_end = length;
@@ -168,4 +169,61 @@ namespace cryptonote {
     return (low + time_span - 1) / time_span;
   }
 
+  difficulty_type next_difficulty_v2(std::vector<std::uint64_t> timestamps, std::vector<difficulty_type> cumulative_difficulties, size_t target_seconds) {
+
+    // LWMA difficulty algorithm
+    // Copyright (c) 2017-2018 Zawy
+    // Copyright (c) 2017-2018 Haven Protocol
+    // MIT license http://www.opensource.org/licenses/mit-license.php.
+    // This is an improved version of Tom Harding's (Deger8) "WT-144"
+    // Karbowanec, Masari, Bitcoin Gold, and Bitcoin Cash have contributed.
+    // See https://github.com/zawy12/difficulty-algorithms/issues/3 for other algos.
+    // Do not use "if solvetime < 0 then solvetime = 1" which allows a catastrophic exploit.
+    // T= target_solvetime;
+    // N=45, 55, 70, 90, 120 for T=600, 240, 120, 90, and 60
+
+    const int64_t T = static_cast<int64_t>(target_seconds);
+    size_t N = DIFFICULTY_WINDOW_V6;
+
+    if (timestamps.size() > N) {
+      timestamps.resize(N + 1);
+      cumulative_difficulties.resize(N + 1);
+    }
+    size_t n = timestamps.size();
+    assert(n == cumulative_difficulties.size());
+    assert(n <= DIFFICULTY_WINDOW_V6);
+    // If new coin, just "give away" first 5 blocks at low difficulty
+    if ( n < 6 ) { return  1; }
+    // If height "n" is from 6 to N, then reset N to n-1.
+    else if (n < N+1) { N=n-1; }
+
+    // To get an average solvetime to within +/- ~0.1%, use an adjustment factor.
+    // adjust=0.999 for 90 < N < 130
+    const double adjust = 0.998;
+    // The divisor k normalizes LWMA.
+    const double k = N * (N + 1) / 2;
+
+    double LWMA(0), sum_inverse_D(0), harmonic_mean_D(0), nextDifficulty(0);
+    int64_t solveTime(0);
+    uint64_t difficulty(0), next_difficulty(0);
+
+    // Loop through N most recent blocks.
+    for (size_t i = 1; i <= N; i++) {
+      solveTime = static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i - 1]);
+      solveTime = std::min<int64_t>((T * 7), std::max<int64_t>(solveTime, (-7 * T)));
+      difficulty = cumulative_difficulties[i] - cumulative_difficulties[i - 1];
+      LWMA += solveTime * i / k;
+      sum_inverse_D += 1 / static_cast<double>(difficulty);
+    }
+
+    // Keep LWMA sane in case something unforeseen occurs.
+    if (static_cast<int64_t>(boost::math::round(LWMA)) < T / 20)
+      LWMA = static_cast<double>(T / 20);
+
+    harmonic_mean_D = N / sum_inverse_D * adjust;
+    nextDifficulty = harmonic_mean_D * T / LWMA;
+    next_difficulty = static_cast<uint64_t>(nextDifficulty);
+
+    return next_difficulty;
+  }
 }

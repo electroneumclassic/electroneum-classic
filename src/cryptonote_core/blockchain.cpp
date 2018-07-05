@@ -700,7 +700,7 @@ difficulty_type Blockchain::get_difficulty_for_next_block()
   //    then when the next block difficulty is queried, push the latest height data and
   //    pop the oldest one from the list. This only requires 1x read per height instead
   //    of doing 735 (DIFFICULTY_BLOCKS_COUNT).
-  if (m_timestamps_and_difficulties_height != 0 && ((height - m_timestamps_and_difficulties_height) == 1))
+  if (m_timestamps_and_difficulties_height != 0 && ((height - m_timestamps_and_difficulties_height) == 1) && m_timestamps.size() >= difficultyBlocksCount)
   {
     uint64_t index = height - 1;
     m_timestamps.push_back(m_db->get_block_timestamp(index));
@@ -735,8 +735,12 @@ difficulty_type Blockchain::get_difficulty_for_next_block()
   }
 
   size_t target = get_difficulty_target();
-  uint8_t version = height >= v6height ? 6 : 1;
-  return next_difficulty(timestamps, difficulties, target, version);
+  if (height < v6height) {
+     uint8_t version = height >= v6height ? 6 : 1;
+    return next_difficulty(timestamps, difficulties, target, version);
+  } else {
+    return next_difficulty_v2(timestamps, difficulties, target);
+  }
 }
 //------------------------------------------------------------------
 // This function removes blocks from the blockchain until it gets to the
@@ -943,7 +947,11 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
   size_t target = get_difficulty_target();
   uint8_t version = height >= v6height ? 6 : 1;
   // calculate the difficulty target for the block and return it
-  return next_difficulty(timestamps, cumulative_difficulties, target, version);
+  if (version == 1) {
+    return next_difficulty(timestamps, cumulative_difficulties, target, version);
+  } else {
+    return next_difficulty_v2(timestamps, cumulative_difficulties, target);
+  }
 }
 //------------------------------------------------------------------
 // This function does a sanity check on basic things that all miner
@@ -2993,7 +3001,9 @@ bool Blockchain::check_block_timestamp(std::vector<uint64_t>& timestamps, const 
 bool Blockchain::check_block_timestamp(const block& b) const
 {
   LOG_PRINT_L3("Blockchain::" << __func__);
-  if(b.timestamp > get_adjusted_time() + CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT)
+  uint64_t cryptonote_block_future_time_limit = get_current_hard_fork_version() == 1
+    ? CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT : CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V6;
+  if(b.timestamp > get_adjusted_time() + cryptonote_block_future_time_limit)
   {
     MERROR_VER("Timestamp of block with id: " << get_block_hash(b) << ", " << b.timestamp << ", bigger than adjusted time + 2 hours");
     return false;
