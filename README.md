@@ -1,14 +1,17 @@
 
-# Electroneum
+<img src="https://i.imgur.com/96ikvTjg.png" width="360"/>
 
+# Electroneum Classic
+
+Copyright (c) 2018, The Electroneum Classic Project
 Copyright (c) 2017-2018, The Electroneum Project
 Copyright (c) 2014-2017, The Monero Project  
 Portions Copyright (c) 2012-2013, The Cryptonote developers  
 
 ## Development Resources
 
-- Web: [electroneum.com](https://electroneum.com)
-- GitHub: [https://github.com/electroneum/electroneum](https://github.com/electroneum/electroneum)
+- Web: [electroneum-classic.com](https://electroneum-classic.com)
+- GitHub: [https://github.com/vans163/electroneum-classic](https://github.com/vans163/electroneum-classic)
 
 ## Introduction
 
