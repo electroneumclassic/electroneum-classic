@@ -10,8 +10,8 @@ Portions Copyright (c) 2012-2013, The Cryptonote developers
 
 ## Development Resources
 
-- Web: [electroneum-classic.com](https://electroneum-classic.com)
-- GitHub: [https://github.com/vans163/electroneum-classic](https://github.com/vans163/electroneum-classic)
+- Web: [https://electroneum-classic.com](https://electroneum-classic.com)
+- GitHub: [https://github.com/electroneumclassic/electroneum-classic](https://github.com/electroneumclassic/electroneum-classic)
 
 ## Introduction
 
