@@ -67,7 +67,7 @@
 
 #define NET_MAKE_IP(b1,b2,b3,b4)  ((LPARAM)(((DWORD)(b1)<<24)+((DWORD)(b2)<<16)+((DWORD)(b3)<<8)+((DWORD)(b4))))
 
-#define MIN_WANTED_SEED_NODES 12
+#define MIN_WANTED_SEED_NODES 6
 
 namespace nodetool
 {
@@ -417,8 +417,13 @@ namespace nodetool
     }
     else
     {
-      full_addrs.insert("173.208.248.106:26977");
-      full_addrs.insert("159.203.30.59:26977");
+      full_addrs.insert("159.203.28.200:12089");
+      full_addrs.insert("128.199.85.61:12089"); 
+      full_addrs.insert("85.119.151.210:12089"); // https://etnx.crypto-pool.pro
+      full_addrs.insert("46.101.40.29:12089"); // https://uspool.electronero.org
+      full_addrs.insert("46.101.76.70:12089");
+      full_addrs.insert("104.236.175.63:12089");
+      full_addrs.insert("165.227.189.226:12089"); // https://pool.electronero.org
     }
     return full_addrs;
   }
@@ -501,7 +506,7 @@ namespace nodetool
         if (result.size())
         {
           for (const auto& addr_string : result)
-            full_addrs.insert(addr_string + ":18080");
+            full_addrs.insert(addr_string + ":12089");
         }
         ++i;
       }
