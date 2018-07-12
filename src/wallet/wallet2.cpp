@@ -2237,9 +2237,6 @@ crypto::secret_key wallet2::generate(const std::string& wallet_, const std::stri
 
   // -1 month for fluctuations in block time and machine date/time setup.
   // avg seconds per block
-  const int seconds_per_block = DIFFICULTY_TARGET_V6;
-  // ~num blocks per month
-  const uint64_t blocks_per_month = 60*60*24*30/seconds_per_block;
 
   // try asking the daemon first
   if(m_refresh_from_block_height == 0 && !recover){
@@ -2256,24 +2253,11 @@ crypto::secret_key wallet2::generate(const std::string& wallet_, const std::stri
     // known height is the height the local daemon is currently
     // synced to, it will be lower than the real chain height if
     // the daemon is currently syncing.
-    height = get_approximate_blockchain_height();
-    uint64_t target_height = get_daemon_blockchain_target_height(err);
-    if (err.empty() && target_height < height)
-      height = target_height;
     uint64_t local_height = get_daemon_blockchain_height(err);
-    if (err.empty() && local_height > height)
-      height = local_height;
-    m_refresh_from_block_height = height >= blocks_per_month ? height - blocks_per_month : 0;
+    if (err.empty())
+      m_refresh_from_block_height = local_height;
   }
 
-  if(m_refresh_from_block_height == 0 && !recover){
-    // Wallets created offline don't know blockchain height.
-    // Set blockchain height calculated from current date/time
-    uint64_t approx_blockchain_height = get_approximate_blockchain_height();
-    if(approx_blockchain_height > 0) {
-      m_refresh_from_block_height = approx_blockchain_height >= blocks_per_month ? approx_blockchain_height - blocks_per_month : 0;
-    }
-  }
   bool r = store_keys(m_keys_file, password, false);
   THROW_WALLET_EXCEPTION_IF(!r, error::file_save_error, m_keys_file);
 
