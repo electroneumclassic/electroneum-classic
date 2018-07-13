@@ -169,61 +169,46 @@ namespace cryptonote {
     return (low + time_span - 1) / time_span;
   }
 
-  difficulty_type next_difficulty_v2(std::vector<std::uint64_t> timestamps, std::vector<difficulty_type> cumulative_difficulties, size_t target_seconds) {
+// LWMA-2 difficulty algorithm 
+// Copyright (c) 2017-2018 Zawy, MIT License
+// https://github.com/zawy12/difficulty-algorithms/issues/3
+// See commented version below for required config file changes.
+// Make sure timestamps and cumulativeDifficulties vectors are sized N+1
+// and most recent element (Nth one) is most recently solved block.
 
-    // LWMA difficulty algorithm
-    // Copyright (c) 2017-2018 Zawy
-    // Copyright (c) 2017-2018 Haven Protocol
-    // MIT license http://www.opensource.org/licenses/mit-license.php.
-    // This is an improved version of Tom Harding's (Deger8) "WT-144"
-    // Karbowanec, Masari, Bitcoin Gold, and Bitcoin Cash have contributed.
-    // See https://github.com/zawy12/difficulty-algorithms/issues/3 for other algos.
-    // Do not use "if solvetime < 0 then solvetime = 1" which allows a catastrophic exploit.
-    // T= target_solvetime;
-    // N=45, 55, 70, 90, 120 for T=600, 240, 120, 90, and 60
+// difficulty_type should be uint64_t
+difficulty_type next_difficulty_v2(std::vector<uint64_t> timestamps, 
+    std::vector<difficulty_type> cumulative_difficulties, size_t target_seconds) {
+ 
+    int64_t  T = DIFFICULTY_TARGET_V6;
+    int64_t  N = DIFFICULTY_WINDOW_V6 -1; // N=45, 60, and 90 for T=600, 120, 60.
+    int64_t  FTL = CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V6; // FTL=3xT
+    int64_t  L(0), ST, sum_3_ST(0), next_D, prev_D, j=0; 
+    
+    // Uncomment if it's a start up. 
+    // uint64_t difficulty_guess = 100; // For startup or forking.  Dev may change.  Guess low.
+    // if (timestamps.size() <= 6 ) {   return difficulty_guess;   }
+    // else if ( timestamps.size() < static_cast<uint64_t>(N +1) ) { N=timestamps.size()-1;  }
 
-    const int64_t T = static_cast<int64_t>(target_seconds);
-    size_t N = DIFFICULTY_WINDOW_V6;
-
-    if (timestamps.size() > N) {
-      timestamps.resize(N + 1);
-      cumulative_difficulties.resize(N + 1);
+    // If hashrate/difficulty ratio after a fork will be < 1/3 prior ratio, hardcode 
+    // difficulty for 61 blocks after fork height: 
+    // if (height >= parameters::UPGRADE_HEIGHT_V2 && height <= parameters::UPGRADE_HEIGHT_V2 + N) {
+    //	return 1000;
+    // }
+           
+    for ( int64_t i = 1; i <= N; i++) {  
+      ST = std::max(-FTL, std::min( static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i-1]), 6*T));
+      L +=  ST * i ; 
+      if ( i > N-3 ) { sum_3_ST += ST; } 
     }
-    size_t n = timestamps.size();
-    assert(n == cumulative_difficulties.size());
-    assert(n <= DIFFICULTY_WINDOW_V6);
-    // If new coin, just "give away" first 5 blocks at low difficulty
-    if ( n < 6 ) { return  1; }
-    // If height "n" is from 6 to N, then reset N to n-1.
-    else if (n < N+1) { N=n-1; }
+    next_D = (static_cast<int64_t>(cumulative_difficulties[N] - cumulative_difficulties[0])*T*(N+1)*99)/(100*2*L);
 
-    // To get an average solvetime to within +/- ~0.1%, use an adjustment factor.
-    // adjust=0.999 for 90 < N < 130
-    const double adjust = 0.998;
-    // The divisor k normalizes LWMA.
-    const double k = N * (N + 1) / 2;
+    // implement LWMA-2 changes from LWMA
+    prev_D = cumulative_difficulties[N] - cumulative_difficulties[N-1];
+    // If N !=60 adjust 3 integers: 67*N/60, 150*60/N, 110*60/N
+    next_D = std::max((prev_D*67)/100, std::min( next_D, (prev_D*150)/100));
+    if ( sum_3_ST < (8*T)/10) {  next_D = std::max(next_D,(prev_D*110)/100); }
 
-    double LWMA(0), sum_inverse_D(0), harmonic_mean_D(0), nextDifficulty(0);
-    int64_t solveTime(0);
-    uint64_t difficulty(0), next_difficulty(0);
-
-    // Loop through N most recent blocks.
-    for (size_t i = 1; i <= N; i++) {
-      solveTime = static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i - 1]);
-      solveTime = std::min<int64_t>((T * 7), std::max<int64_t>(solveTime, (-7 * T)));
-      difficulty = cumulative_difficulties[i] - cumulative_difficulties[i - 1];
-      LWMA += solveTime * i / k;
-      sum_inverse_D += 1 / static_cast<double>(difficulty);
-    }
-
-    // Keep LWMA sane in case something unforeseen occurs.
-    if (static_cast<int64_t>(boost::math::round(LWMA)) < T / 20)
-      LWMA = static_cast<double>(T / 20);
-
-    harmonic_mean_D = N / sum_inverse_D * adjust;
-    nextDifficulty = harmonic_mean_D * T / LWMA;
-    next_difficulty = static_cast<uint64_t>(nextDifficulty);
-
-    return next_difficulty;
-  }
+    return static_cast<uint64_t>(next_D);
+}
 }

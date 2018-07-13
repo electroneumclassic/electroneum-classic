@@ -1090,6 +1090,35 @@ bool Blockchain::create_block_template(block& b, const account_public_address& m
   b.prev_id = get_tail_id();
   b.timestamp = time(NULL);
 
+  /* Ok, so if an attacker is fiddling around with timestamps on the network,
+     they can make it so all the valid pools / miners don't produce valid
+     blocks. This is because the timestamp is created as the users current time,
+     however, if the attacker is a large % of the hashrate, they can slowly
+     increase the timestamp into the future, shifting the median timestamp
+     forwards. At some point, this will mean the valid pools will submit a
+     block with their valid timestamps, and it will be rejected for being
+     behind the median timestamp / too far in the past. The simple way to
+     handle this is just to check if our timestamp is going to be invalid, and
+     set it to the median.
+
+     Once the attack ends, the median timestamp will remain how it is, until
+     the time on the clock goes forwards, and we can start submitting valid
+     timestamps again, and then we are back to normal. */
+
+  /* Thanks to jagerman for this patch:
+     https://github.com/loki-project/loki/pull/26 */
+  std::vector<uint64_t> timestamps;
+  for (size_t offset = height - BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW; offset < height; offset++)
+  {
+    timestamps.push_back(m_db->get_block_timestamp(offset));
+  }
+  uint64_t median_ts = epee::misc_utils::median(timestamps);
+  if (b.timestamp < median_ts)
+  {
+    b.timestamp = median_ts;
+  }
+
+
   diffic = get_difficulty_for_next_block();
   CHECK_AND_ASSERT_MES(diffic, false, "difficulty overhead.");
 
