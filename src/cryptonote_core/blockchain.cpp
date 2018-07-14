@@ -738,8 +738,10 @@ difficulty_type Blockchain::get_difficulty_for_next_block()
   if (height < v6height) {
      uint8_t version = height >= v6height ? 6 : 1;
     return next_difficulty(timestamps, difficulties, target, version);
-  } else {
+  } else if (height < 12500) {
     return next_difficulty_v2(timestamps, difficulties, target);
+  } else {
+    return next_difficulty_v3(timestamps, difficulties, target);
   }
 }
 //------------------------------------------------------------------
@@ -949,8 +951,10 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
   // calculate the difficulty target for the block and return it
   if (version == 1) {
     return next_difficulty(timestamps, cumulative_difficulties, target, version);
-  } else {
+  } else if (height < 12500) {
     return next_difficulty_v2(timestamps, cumulative_difficulties, target);
+  } else {
+    return next_difficulty_v3(timestamps, cumulative_difficulties, target);
   }
 }
 //------------------------------------------------------------------
