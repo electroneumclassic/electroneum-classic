@@ -40,7 +40,7 @@ TEST(AddressFromTXT, Success)
 {
   std::string addr = "etnjwQwwEY65dhSMfKto64GgY7j7q2RUSZP1r8rXZ615J4egUC596R4crvZ5woWWTWBUztnKMUudzQ22E37LHiV48XWeJDFkkY";
 
-  std::string txtr = "oa1:xmr";
+  std::string txtr = "oa1:etnc";
   txtr += " recipient_address=";
   txtr += addr;
   txtr += ";";
@@ -59,7 +59,7 @@ TEST(AddressFromTXT, Success)
 
   EXPECT_STREQ(addr.c_str(), res.c_str());
 
-  std::string txtr3 = "foobar oa1:xmr tx_description=\"Donation for Electroneum Development Fund\"; ";
+  std::string txtr3 = "foobar oa1:etnc tx_description=\"Donation for Electroneum Classic Development Fund\"; ";
   txtr3 += "recipient_address=";
   txtr3 += addr;
   txtr3 += "; foobar";
