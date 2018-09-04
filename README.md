@@ -1,5 +1,5 @@
 
-<img src="https://i.imgur.com/96ikvTjg.png" width="360"/>
+<img src="https://i.imgur.com/wSLuqgA.png" width="360"/>
 
 # Electroneum Classic
 
