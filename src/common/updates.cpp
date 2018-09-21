@@ -53,8 +53,8 @@ namespace tools
       "updates.electroneumpulse.org"
     };
 
-    if (!tools::dns_utils::load_txt_records_from_dns(records, dns_urls, "update"))
-      return false;
+    //if (!tools::dns_utils::load_txt_records_from_dns(records, dns_urls, "update"))
+    return false;
 
     for (const auto& record : records)
     {

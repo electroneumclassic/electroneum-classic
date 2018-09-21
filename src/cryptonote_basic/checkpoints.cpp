@@ -188,21 +188,21 @@ namespace cryptonote
 
     // All four ElectroneumPulse domains have DNSSEC on and valid
     static const std::vector<std::string> dns_urls = {
-      "checkpoints.electroneumpulse.com",
-      "checkpoints.electroneumpulse.info",
-      "checkpoints.electroneumpulse.net",
-      "checkpoints.electroneumpulse.org"
+      //"checkpoints.electroneumpulse.com",
+      //"checkpoints.electroneumpulse.info",
+      //"checkpoints.electroneumpulse.net",
+      //"checkpoints.electroneumpulse.org"
     };
 
     static const std::vector<std::string> testnet_dns_urls = {
-      "testpoints.electroneumpulse.com",
-      "testpoints.electroneumpulse.info",
-      "testpoints.electroneumpulse.net",
-      "testpoints.electroneumpulse.org"
+      //"testpoints.electroneumpulse.com",
+      //"testpoints.electroneumpulse.info",
+      //"testpoints.electroneumpulse.net",
+      //"testpoints.electroneumpulse.org"
     };
 
-    if (!tools::dns_utils::load_txt_records_from_dns(records, testnet ? testnet_dns_urls : dns_urls, "checkpoints"))
-      return true; // why true ?
+    //if (!tools::dns_utils::load_txt_records_from_dns(records, testnet ? testnet_dns_urls : dns_urls, "checkpoints"))
+    return true; // why true ?
 
     for (const auto& record : records)
     {
