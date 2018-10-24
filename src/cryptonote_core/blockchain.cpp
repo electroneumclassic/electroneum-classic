@@ -787,6 +787,7 @@ difficulty_type Blockchain::get_difficulty_for_next_block()
   LOG_PRINT_L3("Blockchain::" << __func__);
 
   uint8_t version = get_current_hard_fork_version();
+  auto height = m_db->height();
   uint32_t difficultyBlocksCount = DIFFICULTY_BLOCKS_COUNT;
   if (version >= 9) {
     difficultyBlocksCount = DIFFICULTY_BLOCKS_COUNT_V9;
@@ -808,7 +809,6 @@ difficulty_type Blockchain::get_difficulty_for_next_block()
   CRITICAL_REGION_LOCAL(m_blockchain_lock);
   std::vector<uint64_t> timestamps;
   std::vector<difficulty_type> difficulties;
-  auto height = m_db->height();
   // ND: Speedup
   // 1. Keep a list of the last 735 (or less) blocks that is used to compute difficulty,
   //    then when the next block difficulty is queried, push the latest height data and
@@ -1025,6 +1025,8 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
 
   uint8_t version = get_current_hard_fork_version();
   uint32_t difficultyBlocksCount = DIFFICULTY_BLOCKS_COUNT;
+  auto height = m_db->height();
+  
   if (version >= 9) {
     difficultyBlocksCount = DIFFICULTY_BLOCKS_COUNT_V9;
   } else if (height >= 2) {
@@ -1085,14 +1087,15 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
   size_t target = get_ideal_hard_fork_version(bei.height) < 2 ? DIFFICULTY_TARGET : DIFFICULTY_TARGET;
 
   if (height < 2) {
-    return next_difficulty(timestamps, difficulties, target, version);
+    return next_difficulty(timestamps, cumulative_difficulties, target, version);
   } else if (height < HARDFORK_EMERGENCY_V6_HEIGHT) {
-    return next_difficulty_v2(timestamps, difficulties, target);
+    return next_difficulty_v2(timestamps, cumulative_difficulties, target);
   } else if (version < 9) {
-    return next_difficulty_v3(timestamps, difficulties, target);
+    return next_difficulty_v3(timestamps, cumulative_difficulties, target);
   } else {
-    return next_difficulty_v9(timestamps, difficulties, target);
+    return next_difficulty_v9(timestamps, cumulative_difficulties, target);
   }
+  return next_difficulty_v9(timestamps, cumulative_difficulties, target);
 }
 //------------------------------------------------------------------
 // This function does a sanity check on basic things that all miner

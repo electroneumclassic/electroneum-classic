@@ -52,8 +52,8 @@ namespace tools
         "updates.moneropulse.se"
     };
 
-    if (!tools::dns_utils::load_txt_records_from_dns(records, dns_urls))
-      return false;
+    //if (!tools::dns_utils::load_txt_records_from_dns(records, dns_urls))
+    return false;
 
     for (const auto& record : records)
     {

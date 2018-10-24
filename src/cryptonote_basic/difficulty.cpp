@@ -33,6 +33,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <vector>
+#include <boost/math/special_functions/round.hpp>
 
 #include "common/int-util.h"
 #include "crypto/hash.h"
@@ -275,7 +276,7 @@ difficulty_type next_difficulty_v3(std::vector<uint64_t> timestamps,
 
 // difficulty_type should be uint64_t
 difficulty_type next_difficulty_v9(std::vector<uint64_t> timestamps, 
-    std::vector<difficulty_type> cumulative_difficulties) {
+    std::vector<difficulty_type> cumulative_difficulties, size_t target_seconds) {
     
     uint64_t  T = DIFFICULTY_TARGET;
     uint64_t  N = DIFFICULTY_WINDOW_V9; // N=45, 60, and 90 for T=600, 120, 60.
