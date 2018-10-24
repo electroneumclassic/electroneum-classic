@@ -26,8 +26,8 @@
 
 #pragma once 
 
-#undef ELECTRONEUM_DEFAULT_LOG_CATEGORY
-#define ELECTRONEUM_DEFAULT_LOG_CATEGORY "net.http"
+#undef MONERO_DEFAULT_LOG_CATEGORY
+#define MONERO_DEFAULT_LOG_CATEGORY "net.http"
 
 namespace epee
 {
@@ -38,8 +38,8 @@ namespace epee
       virtual ~i_sub_handler(){}
 
       virtual bool update_in( std::string& piece_of_transfer)=0;
-      virtual void stop(std::string& OUT collect_remains)=0;
-      virtual bool update_and_stop(std::string& OUT collect_remains, bool& is_changed)
+      virtual void stop(std::string& collect_remains)=0;
+      virtual bool update_and_stop(std::string& collect_remains, bool& is_changed)
       {
         is_changed = true;
         bool res = this->update_in(collect_remains);
@@ -66,7 +66,7 @@ namespace epee
       {
         return m_powner_filter->handle_target_data(piece_of_transfer);
       }
-      virtual void stop(std::string& OUT collect_remains)
+      virtual void stop(std::string& collect_remains)
       {
 
       }

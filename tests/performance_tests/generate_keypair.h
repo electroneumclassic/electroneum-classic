@@ -1,6 +1,4 @@
-// Copyrights(c) 2018, The Electroneum Classic Project
-// Copyrights(c) 2017-2018, The Electroneum Project
-// Copyrights(c) 2014-2017, The Monero Project
+// Copyright (c) 2014-2018, The Monero Project
 // 
 // All rights reserved.
 // 
@@ -47,7 +45,7 @@ public:
 
   bool test()
   {
-    cryptonote::keypair::generate();
+    cryptonote::keypair::generate(hw::get_device("default"));
     return true;
   }
 };

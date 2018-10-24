@@ -61,7 +61,7 @@ CMakeCache.txt
 CMakeFiles
 cmake_install.cmake
 install_manifest.txt
-*.cmake
+cmake-build-debug/
 
 ### Linux ###
 *~
@@ -104,23 +104,3 @@ local.properties
 .idea/
 
 /testnet
-
-### Dev Stuff ###
-cmake-deubg-build/
-utils/post_build/
-
-#whitelist
-!cmake/32-bit-toolchain.cmake
-!cmake/64-bit-toolchain.cmake
-!cmake/FindBerkeleyDB.cmake
-!cmake/FindLibunwind.cmake
-!cmake/FindMiniupnpc.cmake
-!cmake/FindReadline.cmake
-!cmake/FindUnbound.cmake
-!external/miniupnpc/Makefile
-!external/miniupnpc/miniupnpcstrings.h.cmake
-!external/unbound/configure_checks.cmake
-!src/version.cmake
-!tests/gtest/cmake
-!version.cmake
-

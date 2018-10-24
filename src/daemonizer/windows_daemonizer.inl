@@ -1,6 +1,4 @@
-// Copyrights(c) 2018, The Electroneum Classic Project
-// Copyrights(c) 2017-2018, The Electroneum Project
-// Copyrights(c) 2014-2017, The Monero Project
+// Copyright (c) 2014-2018, The Monero Project
 // 
 // All rights reserved.
 // 
@@ -33,6 +31,7 @@
 #include "common/util.h"
 #include "daemonizer/windows_service.h"
 #include "daemonizer/windows_service_runner.h"
+#include "cryptonote_core/cryptonote_core.h"
 
 #include <shlobj.h>
 #include <boost/filesystem/operations.hpp>
@@ -113,9 +112,9 @@ namespace daemonizer
   {
     if (command_line::has_arg(vm, arg_is_service))
     {
-      if (command_line::has_arg(vm, command_line::arg_data_dir))
+      if (command_line::has_arg(vm, cryptonote::arg_data_dir))
       {
-        return command_line::get_arg(vm, command_line::arg_data_dir);
+        return command_line::get_arg(vm, cryptonote::arg_data_dir);
       }
       else
       {
@@ -177,7 +176,7 @@ namespace daemonizer
     }
     else // interactive
     {
-      //LOG_PRINT_L0("Electroneum '" << ELECTRONEUM_RELEASE_NAME << "' (v" << ELECTRONEUM_VERSION_FULL);
+      //LOG_PRINT_L0("Monero '" << MONERO_RELEASE_NAME << "' (v" << MONERO_VERSION_FULL);
       return executor.run_interactive(vm);
     }
 

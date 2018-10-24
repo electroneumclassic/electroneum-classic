@@ -1,6 +1,4 @@
-// Copyrights(c) 2018, The Electroneum Classic Project
-// Copyrights(c) 2017-2018, The Electroneum Project
-// Copyrights(c) 2014-2017, The Monero Project
+// Copyright (c) 2014-2018, The Monero Project
 // 
 // All rights reserved.
 // 
@@ -34,7 +32,7 @@
 #include "chaingen.h"
 
 const size_t invalid_index_value = std::numeric_limits<size_t>::max();
-const uint64_t FIRST_BLOCK_REWARD = 2002716;
+const uint64_t FIRST_BLOCK_REWARD = 17592186044415;
 
 
 template<class concrete_test>

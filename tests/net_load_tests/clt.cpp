@@ -1,6 +1,4 @@
-// Copyrights(c) 2018, The Electroneum Classic Project
-// Copyrights(c) 2017-2018, The Electroneum Project
-// Copyrights(c) 2014-2017, The Monero Project
+// Copyright (c) 2014-2018, The Monero Project
 // 
 // All rights reserved.
 // 
@@ -43,6 +41,7 @@
 #include "misc_language.h"
 #include "misc_log_ex.h"
 #include "storages/levin_abstract_invoke2.h"
+#include "common/util.h"
 
 #include "net_load_tests.h"
 
@@ -195,7 +194,7 @@ namespace
     {
       m_thread_count = (std::max)(min_thread_count, boost::thread::hardware_concurrency() / 2);
 
-      m_tcp_server.get_config_object().m_pcommands_handler = &m_commands_handler;
+      m_tcp_server.get_config_object().set_handler(&m_commands_handler);
       m_tcp_server.get_config_object().m_invoke_timeout = CONNECTION_TIMEOUT;
 
       ASSERT_TRUE(m_tcp_server.init_server(clt_port, "127.0.0.1"));
@@ -240,9 +239,10 @@ namespace
     static void TearDownTestCase()
     {
       // Stop server
-      test_levin_commands_handler commands_handler;
-      test_tcp_server tcp_server(epee::net_utils::e_connection_type_NET);
-      tcp_server.get_config_object().m_pcommands_handler = &commands_handler;
+      test_levin_commands_handler *commands_handler_ptr = new test_levin_commands_handler();
+      test_levin_commands_handler &commands_handler = *commands_handler_ptr;
+      test_tcp_server tcp_server(epee::net_utils::e_connection_type_RPC);
+      tcp_server.get_config_object().set_handler(commands_handler_ptr, [](epee::levin::levin_commands_handler<test_connection_context> *handler)->void { delete handler; });
       tcp_server.get_config_object().m_invoke_timeout = CONNECTION_TIMEOUT;
 
       if (!tcp_server.init_server(clt_port, "127.0.0.1")) return;
@@ -629,10 +629,13 @@ TEST_F(net_load_test_clt, permament_open_and_close_and_connections_closed_by_ser
 
 int main(int argc, char** argv)
 {
+  TRY_ENTRY();
+  tools::on_startup();
   epee::debug::get_set_enable_assert(true, false);
   //set up logging options
   mlog_configure(mlog_get_default_log_path("net_load_tests_clt.log"), true);
 
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
+  CATCH_ENTRY_L0("main", 1);
 }

@@ -1,6 +1,4 @@
-// Copyrights(c) 2018, The Electroneum Classic Project
-// Copyrights(c) 2017-2018, The Electroneum Project
-// Copyrights(c) 2014-2017, The Monero Project
+// Copyright (c) 2014-2018, The Monero Project
 // 
 // All rights reserved.
 // 
@@ -42,7 +40,7 @@
 
 void set_process_affinity(int core)
 {
-#if defined (__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
+#if defined (__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(__sun)
     return;
 #elif defined(BOOST_WINDOWS)
   DWORD_PTR mask = 1;
@@ -64,7 +62,7 @@ void set_process_affinity(int core)
 
 void set_thread_high_priority()
 {
-#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
+#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(__sun)
     return;
 #elif defined(BOOST_WINDOWS)
   ::SetPriorityClass(::GetCurrentProcess(), HIGH_PRIORITY_CLASS);

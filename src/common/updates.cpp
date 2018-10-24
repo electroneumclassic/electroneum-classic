@@ -1,6 +1,4 @@
-// Copyright (c) 2018, The Electroneum Classic Project
-// Copyright (c) 2017-2018, The Electroneum Project
-// Copyright (c) 2017, The Monero Project
+// Copyright (c) 2017-2018, The Monero Project
 // 
 // All rights reserved.
 // 
@@ -28,13 +26,14 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include <boost/algorithm/string.hpp>
 #include "misc_log_ex.h"
 #include "util.h"
 #include "dns_utils.h"
 #include "updates.h"
 
-#undef ELECTRONEUM_DEFAULT_LOG_CATEGORY
-#define ELECTRONEUM_DEFAULT_LOG_CATEGORY "updates"
+#undef MONERO_DEFAULT_LOG_CATEGORY
+#define MONERO_DEFAULT_LOG_CATEGORY "updates"
 
 namespace tools
 {
@@ -45,15 +44,15 @@ namespace tools
 
     MDEBUG("Checking updates for " << buildtag << " " << software);
 
-    // All four ElectroneumPulse domains have DNSSEC on and valid
+    // All four MoneroPulse domains have DNSSEC on and valid
     static const std::vector<std::string> dns_urls = {
-      "updates.electroneumpulse.com",
-      "updates.electroneumpulse.info",
-      "updates.electroneumpulse.net",
-      "updates.electroneumpulse.org"
+        "updates.moneropulse.org",
+        "updates.moneropulse.net",
+        "updates.moneropulse.co",
+        "updates.moneropulse.se"
     };
 
-    if (!tools::dns_utils::load_txt_records_from_dns(records, dns_urls, "update"))
+    if (!tools::dns_utils::load_txt_records_from_dns(records, dns_urls))
       return false;
 
     for (const auto& record : records)
@@ -70,12 +69,12 @@ namespace tools
         continue;
 
       bool alnum = true;
-      for (auto c: hash)
+      for (auto c: fields[3])
         if (!isalnum(c))
           alnum = false;
-      if (hash.size() != 64 && !alnum)
+      if (fields[3].size() != 64 && !alnum)
       {
-        MWARNING("Invalid hash: " << hash);
+        MWARNING("Invalid hash: " << fields[3]);
         continue;
       }
 
@@ -100,19 +99,19 @@ namespace tools
 
   std::string get_update_url(const std::string &software, const std::string &subdir, const std::string &buildtag, const std::string &version, bool user)
   {
-      const char *base = "https://github.com/electroneumclassic/electroneum-classic/releases/download/v";
+    const char *base = user ? "https://downloads.getmonero.org/" : "https://updates.getmonero.org/";
 #ifdef _WIN32
-    static const char extension[] = ".zip";
+    static const char *extension = strncmp(buildtag.c_str(), "install-", 8) ? ".zip" : ".exe";
 #else
-    static const char extension[] = ".zip";
+    static const char extension[] = ".tar.bz2";
 #endif
 
     std::string url;
 
     url =  base;
-//    if (!subdir.empty())
-//      url += subdir + "/";
-    url = url + version + "/" + software + "-" + buildtag + "-v" + version + extension;
+    if (!subdir.empty())
+      url += subdir + "/";
+    url = url + software + "-" + buildtag + "-v" + version + extension;
     return url;
   }
 }

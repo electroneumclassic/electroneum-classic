@@ -1,6 +1,4 @@
-// Copyrights(c) 2018, The Electroneum Classic Project
-// Copyrights(c) 2017-2018, The Electroneum Project
-// Copyrights(c) 2014-2017, The Monero Project
+// Copyright (c) 2014-2018, The Monero Project
 // 
 // All rights reserved.
 // 
@@ -36,8 +34,8 @@
 #include "p2p/net_node.h"
 #include "daemon/protocol.h"
 
-#undef ELECTRONEUM_DEFAULT_LOG_CATEGORY
-#define ELECTRONEUM_DEFAULT_LOG_CATEGORY "daemon"
+#undef MONERO_DEFAULT_LOG_CATEGORY
+#define MONERO_DEFAULT_LOG_CATEGORY "daemon"
 
 namespace daemonize
 {
@@ -67,7 +65,7 @@ public:
     {
       throw std::runtime_error("Failed to initialize p2p server.");
     }
-    MGINFO("P2p server initialized OK");
+    MGINFO("p2p server initialized OK");
   }
 
   t_node_server & get()

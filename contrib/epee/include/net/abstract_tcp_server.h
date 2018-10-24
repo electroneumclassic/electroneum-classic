@@ -38,8 +38,8 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-#undef ELECTRONEUM_DEFAULT_LOG_CATEGORY
-#define ELECTRONEUM_DEFAULT_LOG_CATEGORY "net"
+#undef MONERO_DEFAULT_LOG_CATEGORY
+#define MONERO_DEFAULT_LOG_CATEGORY "net"
 
 namespace epee 
 {
@@ -305,7 +305,7 @@ namespace net_utils
 		m_connections.back().powner = this;
 		m_connections.back().m_self_it = --m_connections.end();
 		m_connections.back().m_context.m_remote_address = remote_address;
-		m_connections.back().m_htread = threads_helper::create_thread(ConnectionHandlerProc, &m_connections.back());
+		m_connections.back().m_htread = threads_helper::create_thread(ConnectionHandlerProc, &m_connections.back()); // ugh, seems very risky
 
 		return true;
 	}

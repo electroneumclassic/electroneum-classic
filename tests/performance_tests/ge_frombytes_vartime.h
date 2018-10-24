@@ -1,6 +1,4 @@
-// Copyrights(c) 2018, The Electroneum Classic Project
-// Copyrights(c) 2017-2018, The Electroneum Project
-// Copyrights(c) 2014-2017, The Monero Project
+// Copyright (c) 2014-2018, The Monero Project
 // 
 // All rights reserved.
 // 
@@ -54,9 +52,9 @@ public:
     m_alice.generate();
 
     std::vector<tx_destination_entry> destinations;
-    destinations.push_back(tx_destination_entry(1, m_alice.get_keys().m_account_address));
+    destinations.push_back(tx_destination_entry(1, m_alice.get_keys().m_account_address, false));
 
-    return construct_tx(this->m_miners[this->real_source_idx].get_keys(), this->m_sources, destinations, std::vector<uint8_t>(), m_tx, 0);
+    return construct_tx(this->m_miners[this->real_source_idx].get_keys(), this->m_sources, destinations, boost::none, std::vector<uint8_t>(), m_tx, 0);
   }
 
   bool test()

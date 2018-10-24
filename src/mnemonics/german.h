@@ -1,8 +1,6 @@
-// Word list created by Electroneum contributor Shrikez
+// Word list created by Monero contributor Shrikez
 // 
-// Copyrights(c) 2018, The Electroneum Classic Project
-// Copyrights(c) 2017-2018, The Electroneum Project
-// Copyrights(c) 2014-2017, The Monero Project
+// Copyright (c) 2014-2018, The Monero Project
 // 
 // All rights reserved.
 // 
@@ -53,7 +51,10 @@ namespace Language
   class German: public Base
   {
   public:
-    German(): Base("Deutsch", std::vector<std::string>({
+    German(): Base("Deutsch", "German", {}, 4)
+    {
+      static constexpr const char * const words[NWORDS] =
+      {
         "Abakus",
         "Abart",
         "abbilden",
@@ -1680,8 +1681,8 @@ namespace Language
         "Zündung",
         "Zweck",
         "Zyklop"
-      }), 4)
-    {
+      };
+      set_words(words);
       populate_maps();
     }
   };

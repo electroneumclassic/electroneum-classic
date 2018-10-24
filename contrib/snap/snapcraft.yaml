@@ -1,31 +1,31 @@
-name: electroneum
-version: 0.11.1.0
-summary: "Electroneum: the secure, private, untraceable cryptocurrency https://electroneum.com"
+name: monero
+version: 0.11.1.0-1
+summary: "Monero: the secure, private, untraceable cryptocurrency https://getmonero.org"
 description: |
-    Electroneum is a private, secure, untraceable, decentralised digital currency.
+    Monero is a private, secure, untraceable, decentralised digital currency.
     You are your bank, you control your funds, and nobody can trace your transfers
     unless you allow them to do so.
 grade: devel
 confinement: strict
 
 apps:
-    electroneumd:
+    monerod:
         daemon: forking
         command: |
-          electroneumd-wrapper --detach --data-dir ${SNAP_COMMON} --config-file ${SNAP_USER_DATA}/etc/electroneumd.conf
+          monerod-wrapper --detach --data-dir ${SNAP_COMMON} --config-file ${SNAP_USER_DATA}/etc/monerod.conf
         plugs:
             - network
             - network-bind
-    electroneum-wallet-rpc:
+    monero-wallet-rpc:
         command: |
-          electroneum-wallet-rpc --log-file ${SNAP_USER_DATA}
+          monero-wallet-rpc --log-file ${SNAP_USER_DATA}
         plugs:
             - home
             - network
             - network-bind
-    electroneum-wallet-cli:
+    monero-wallet-cli:
         command: |
-          electroneum-wallet-cli --log-file ${SNAP_USER_DATA}
+          monero-wallet-cli --log-file ${SNAP_USER_DATA}
         plugs:
             - home
             - network
@@ -35,7 +35,6 @@ parts:
         plugin: cmake
         configflags:
             - -DBDB_STATIC=1
-            - -DUPNP_STATIC=1
             - -DBoost_USE_STATIC_LIBS=1
             - -DBoost_USE_STATIC_RUNTIME=1
             - -DARCH=default
@@ -46,11 +45,15 @@ parts:
             - libunbound-dev
             - libevent-dev
             - libboost-all-dev
+            - libzmqpp-dev
+            - libzmq3-dev
+            - libsodium-dev
             - libdb-dev
             - libunwind-dev
             - libminiupnpc-dev
             - libldns-dev
             - libexpat1-dev
+            - libreadline6-dev
             - bison
             - doxygen
             - graphviz
@@ -68,8 +71,8 @@ parts:
         plugin: dump
         source: .
         organize:
-            contrib/snap/electroneumd.conf: etc/electroneumd.conf
-            contrib/snap/electroneumd-wrapper: bin/electroneumd-wrapper
+            contrib/snap/monerod.conf: etc/monerod.conf
+            contrib/snap/monerod-wrapper: bin/monerod-wrapper
         prime:
             - etc
             - bin
