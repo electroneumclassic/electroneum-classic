@@ -147,10 +147,10 @@
 #define THREAD_STACK_SIZE                       5 * 1024 * 1024
 
 #define HF_VERSION_DYNAMIC_FEE                  20 //no dynamic fees yet
-#define HF_VERSION_MIN_MIXIN_4                  6
-#define HF_VERSION_MIN_MIXIN_6                  7
-#define HF_VERSION_MIN_MIXIN_10                 8
-#define HF_VERSION_ENFORCE_RCT                  8 //Make RCT enabled from harkfork V2
+#define HF_VERSION_MIN_MIXIN_4                  20
+#define HF_VERSION_MIN_MIXIN_6                  20
+#define HF_VERSION_MIN_MIXIN_10                 9
+#define HF_VERSION_ENFORCE_RCT                  9 //Make RCT enabled from harkfork V9
 #define HF_VERSION_PER_BYTE_FEE                 20 //no fee per byte yet 
 
 #define PER_KB_FEE_QUANTIZATION_DECIMALS        8
