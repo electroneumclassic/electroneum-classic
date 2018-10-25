@@ -1,4 +1,5 @@
 #docker build -t etnc .
+#docker run --rm -ti -v /root/project/electroneum-classic:/src etnc
 # Multistage docker build, requires docker 17.05
 
 # builder stage
@@ -111,27 +112,6 @@ RUN set -ex \
     && make install
 
 WORKDIR /src
-COPY . .
-
-ENV USE_SINGLE_BUILDDIR=1
-ARG NPROC
-RUN set -ex && \
-    git submodule init && git submodule update && \
-    rm -rf build && \
-    if [ -z "$NPROC" ] ; \
-    then make -j$(nproc) release-static ; \
-    else make -j$NPROC release-static ; \
-    fi
-
-# runtime stage
-FROM ubuntu:16.04
-
-RUN set -ex && \
-    apt-get update && \
-    apt-get --no-install-recommends --yes install ca-certificates && \
-    apt-get clean && \
-    rm -rf /var/lib/apt
-COPY --from=builder /src/build/release/bin /usr/local/bin/
 
 # Contains the blockchain
 VOLUME /root/.bitmonero
@@ -144,5 +124,4 @@ VOLUME /wallet
 EXPOSE 26977
 EXPOSE 26978
 
-ENTRYPOINT ["monerod", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=26977", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=26978", "--non-interactive", "--confirm-external-bind"]
-
+CMD "/bin/bash"
