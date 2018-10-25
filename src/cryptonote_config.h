@@ -67,8 +67,12 @@
 // COIN - number of smallest units in one coin
 #define COIN                                            ((uint64_t)100) // pow(10, 12)
 
-#define FEE_PER_KB                                      ((uint64_t)1000) //Fee of 10.0/kb from HF V9
-#define FEE_PER_BYTE                                    ((uint64_t)1) //Fee of 0.01/b from HF V9
+
+#define FEE_PER_KB                                      ((uint64_t)1) //Fee of 0.01/kb
+#define FEE_PER_KB_V6                                   ((uint64_t)10) //Fee of 0.10/kb from HF V6
+#define FEE_PER_KB_V9                                   ((uint64_t)1000) //Fee of 10.0/kb from HF V9
+#define FEE_PER_BYTE                                    ((uint64_t)1) //Fee of 0.01/b from HF V?
+
 #define DYNAMIC_FEE_PER_KB_BASE_FEE                     ((uint64_t)2000000000) // 2 * pow(10,9)
 #define DYNAMIC_FEE_PER_KB_BASE_BLOCK_REWARD            ((uint64_t)10000000000000) // 10 * pow(10,12)
 #define DYNAMIC_FEE_PER_KB_BASE_FEE_V5                  ((uint64_t)2000000000 * (uint64_t)CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2 / CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V5)
@@ -147,7 +151,7 @@
 #define HF_VERSION_MIN_MIXIN_6                  7
 #define HF_VERSION_MIN_MIXIN_10                 8
 #define HF_VERSION_ENFORCE_RCT                  8 //Make RCT enabled from harkfork V2
-#define HF_VERSION_PER_BYTE_FEE                 8 
+#define HF_VERSION_PER_BYTE_FEE                 20 //no fee per byte yet 
 
 #define PER_KB_FEE_QUANTIZATION_DECIMALS        8
 
