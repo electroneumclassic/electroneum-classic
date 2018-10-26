@@ -15,7 +15,8 @@ print("maybe someone smart can replace the sed with perl..")
 a = ""
 
 license = textwrap.dedent("""\
-    // Copyright (c) 2014-2018, The Monero Project
+    // Copyright (c) 2018-2019, The Electroneum Classic Project
+// Copyright (c) 2014-2018, The Monero Project
     // 
     // All rights reserved.
     // 
