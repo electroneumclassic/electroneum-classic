@@ -94,8 +94,8 @@ static const struct {
   // version 1 from the start of the blockchain
   { 1, 1, 0, 1341378000 },
   { 6, 2, 0, 1530759847 },
-  // version 9 starts from block 1686275, which is on or around the 24th of October, 2018.
-  //{ 9, 1686275, 0, 1535889548 },
+  // version 9 starts from block 146500, which is on or around the 27th of October, 2018.
+  { 9, 146500, 0, 1535889548 },
 };
 static const uint64_t mainnet_hard_fork_version_1_till = 1;
 
