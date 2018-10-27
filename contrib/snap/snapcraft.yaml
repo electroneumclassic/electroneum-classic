@@ -1,31 +1,31 @@
-name: monero
-version: 0.11.1.0-1
-summary: "Monero: the secure, private, untraceable cryptocurrency https://getmonero.org"
+name: etnc
+version: "3.0.0.0"
+summary: "Electroneum Classic: the fast, secure, untraceable cryptocurrency https://electroneum-classic.com"
 description: |
-    Monero is a private, secure, untraceable, decentralised digital currency.
+    Electroneum Classic is a private, secure, untraceable, decentralised digital currency.
     You are your bank, you control your funds, and nobody can trace your transfers
     unless you allow them to do so.
 grade: devel
 confinement: strict
 
 apps:
-    monerod:
+    etncd:
         daemon: forking
         command: |
-          monerod-wrapper --detach --data-dir ${SNAP_COMMON} --config-file ${SNAP_USER_DATA}/etc/monerod.conf
+          etncd-wrapper --detach --data-dir ${SNAP_COMMON} --config-file ${SNAP_USER_DATA}/etc/etncd.conf
         plugs:
             - network
             - network-bind
-    monero-wallet-rpc:
+    etnc-wallet-rpc:
         command: |
-          monero-wallet-rpc --log-file ${SNAP_USER_DATA}
+          etnc-wallet-rpc --log-file ${SNAP_USER_DATA}
         plugs:
             - home
             - network
             - network-bind
-    monero-wallet-cli:
+    etnc-wallet-cli:
         command: |
-          monero-wallet-cli --log-file ${SNAP_USER_DATA}
+          etnc-wallet-cli --log-file ${SNAP_USER_DATA}
         plugs:
             - home
             - network
@@ -71,8 +71,8 @@ parts:
         plugin: dump
         source: .
         organize:
-            contrib/snap/monerod.conf: etc/monerod.conf
-            contrib/snap/monerod-wrapper: bin/monerod-wrapper
+            contrib/snap/etncd.conf: etc/etncd.conf
+            contrib/snap/etncd-wrapper: bin/etncd-wrapper
         prime:
             - etc
             - bin

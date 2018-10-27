@@ -142,7 +142,7 @@ namespace wallet_args
       if (command_line::get_arg(vm, command_line::arg_help))
       {
         Print(print) << "Electroneum Classic '" << MONERO_RELEASE_NAME << "' (v" << MONERO_VERSION_FULL << ")" << ENDL;
-        Print(print) << wallet_args::tr("This is the command line monero wallet. It needs to connect to a monero\n"
+        Print(print) << wallet_args::tr("This is the command line etnc wallet. It needs to connect to an etnc\n"
 												  "daemon to work correctly.") << ENDL;
         Print(print) << wallet_args::tr("Usage:") << ENDL << "  " << usage;
         Print(print) << desc_all;
