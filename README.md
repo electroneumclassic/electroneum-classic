@@ -118,7 +118,7 @@ invokes cmake commands as needed.
     https://github.com/zeromq/cppzmq to `/usr/local/include` should fix that error.
     
     *Note*: The instructions above will compile the most stable release of the
-    Monero software. If you would like to use and test the most recent software,
+    Electroneum Classic software. If you would like to use and test the most recent software,
     use ```git checkout master```. The master branch may contain updates that are
     both unstable and incompatible with release software, though testing is always 
     encouraged. 
@@ -167,8 +167,8 @@ Tested on a Raspberry Pi Zero with a clean install of minimal Raspbian Stretch (
 * Clone electroneum-classic and checkout most recent release version:
 ```
     git clone https://github.com/electroneumclassic/electroneum-classic.git
-	cd electroneum-classic
-	git checkout master
+    cd electroneum-classic
+    git checkout master
 ```
 * Build:
 ```
@@ -263,7 +263,7 @@ application.
 
 * Change to the cloned directory, run:
 	
-        cd monero
+        cd electroneum-classic
 
 * If you would like a specific [version/tag](https://github.com/electroneumclassic/electroneum-classic/tags), do a git checkout for that version. eg. 'v0.13.0.0'. If you dont care about the version and just want binaries from master, skip this step:
 	
@@ -481,7 +481,7 @@ Installing a snap is very quick. Snaps are secure. They are isolated with all of
 
 Packaging for your favorite distribution would be a welcome contribution!
 
-## Running monerod
+## Running etncd
 
 The build places the binary in `bin/` sub-directory within the build directory
 from which cmake was invoked (repository root by default). To run in
@@ -537,7 +537,7 @@ setting the following configuration parameters and environment variables:
 * If you use the wallet with a Tor daemon via the loopback IP (eg, 127.0.0.1:9050),
   then use `--untrusted-daemon` unless it is your own hidden service.
 
-Example command line to start monerod through Tor:
+Example command line to start etncd through Tor:
 
     DNS_PUBLIC=tcp torsocks etncd --p2p-bind-ip 127.0.0.1 --no-igd
 
@@ -579,11 +579,11 @@ Enter `echo core | sudo tee /proc/sys/kernel/core_pattern` to stop cores from be
 
 Run the build.
 
-When it terminates with an output along the lines of "Segmentation fault (core dumped)", there should be a core dump file in the same directory as monerod. It may be named just `core`, or `core.xxxx` with numbers appended.
+When it terminates with an output along the lines of "Segmentation fault (core dumped)", there should be a core dump file in the same directory as etncd. It may be named just `core`, or `core.xxxx` with numbers appended.
 
 You can now analyse this core dump with `gdb` as follows:
 
-`gdb /path/to/monerod /path/to/dumpfile`
+`gdb /path/to/etncd /path/to/dumpfile`
 
 Print the stack trace with `bt`
 
@@ -593,7 +593,7 @@ Type `gdb /path/to/etncd`
 
 Pass command-line options with `--args` followed by the relevant arguments
 
-Type `run` to run monerod
+Type `run` to run etncd
 
 ### Analysing memory corruption
 
