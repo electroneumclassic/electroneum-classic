@@ -1,5 +1,5 @@
 #docker build -t etnc .
-#docker run --rm -ti -v /root/project/electroneum-classic:/src etnc
+#docker run --rm -ti -v /home/user/project/etnc2:/src etnc
 # Multistage docker build, requires docker 17.05
 
 # builder stage
